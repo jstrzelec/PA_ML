@@ -8,19 +8,19 @@ We will analyze how well subjects perform a particular weight-lifting exercise b
 
 The data consists of 160 measurements.
 
-To model a predictor, I took into consideration the following analysis :
+To model a predictor, I took into consideration the following :
 
 - The exercise was the biceps curl, so I tried to focus the measurements on both relative position of belt/forearm/arm/dumbbell as well as relative acceleration of same.
 
-- I generated a number of subsets of measurements with caret's featurePlot(), and attempted to select measurements that generated the most separating in the outcome variable ('classe' - how well the subject performed the exercise) as possible.
+- I generated a number of subsets of measurements with caret's featurePlot(), and attempted to select measurements that generated the most separation in the outcome variable ('classe' - a factor variable indicating how well the subject performed the exercise) as possible.
 
-- A random forest training was selected, as it is good for modeling multi-value factor variables.
+- A random forest training was selected, as it is good for modeling multi-value factor variables and categorization.
 
 - For cross-validation, a 10-fold (with 3 repeats) was chosen.
 
-- 82% model accuracy was obtained.
+- Model accuracy obtained : 81%
 
-- Expected out of sample error : 20%.
+- Expected out of sample error : 18%
 
 
 ***
@@ -46,20 +46,13 @@ library(caret)
 ```
 
 ```r
-train <- read.csv(file='pml-training.csv',na.strings=c('#DIV/0!', '', 'NA'),stringsAsFactors=FALSE)#,colClasses = c(rep("character",7),rep("integer", 152), rep("character", 1)) )
+train <- read.csv(file='pml-training.csv',na.strings=c('#DIV/0!', '', 'NA'),stringsAsFactors=FALSE)
 train <- train[, -grep("(kurtosis.*)|(skewness.*belt)|(skewness.*arm)|(skewness.*dumbbell)|(min_yaw_forearm)", colnames(train))]
 train <- na.omit(train)
 train <- train[,c(8:135)]
 train[, c(1:127)] <- sapply(train[, c(1:127)], as.numeric)
 train$classe = factor(train$classe)
-dim(train)
-```
 
-```
-## [1] 317 128
-```
-
-```r
 # train now has 128 cols
 
 featurePlot(x=train[,

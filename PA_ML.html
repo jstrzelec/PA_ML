@@ -124,14 +124,14 @@ $(document).ready(function () {
 <h3>overview and summary</h3>
 <p>We will analyze how well subjects perform a particular weight-lifting exercise by analysing data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants.</p>
 <p>The data consists of 160 measurements.</p>
-<p>To model a predictor, I took into consideration the following analysis :</p>
+<p>To model a predictor, I took into consideration the following :</p>
 <ul>
 <li><p>The exercise was the biceps curl, so I tried to focus the measurements on both relative position of belt/forearm/arm/dumbbell as well as relative acceleration of same.</p></li>
-<li><p>I generated a number of subsets of measurements with caret’s featurePlot(), and attempted to select measurements that generated the most separating in the outcome variable (‘classe’ - how well the subject performed the exercise) as possible.</p></li>
-<li><p>A random forest training was selected, as it is good for modeling multi-value factor variables.</p></li>
+<li><p>I generated a number of subsets of measurements with caret’s featurePlot(), and attempted to select measurements that generated the most separation in the outcome variable (‘classe’ - a factor variable indicating how well the subject performed the exercise) as possible.</p></li>
+<li><p>A random forest training was selected, as it is good for modeling multi-value factor variables and categorization.</p></li>
 <li><p>For cross-validation, a 10-fold (with 3 repeats) was chosen.</p></li>
-<li><p>82% model accuracy was obtained.</p></li>
-<li><p>Expected out of sample error : 20%.</p></li>
+<li><p>Model accuracy obtained : 81%</p></li>
+<li><p>Expected out of sample error : 18%</p></li>
 </ul>
 <hr />
 </div>
@@ -142,15 +142,14 @@ library(caret)</code></pre>
 <pre><code>## Warning: package 'caret' was built under R version 3.2.5</code></pre>
 <pre><code>## Loading required package: lattice</code></pre>
 <pre><code>## Loading required package: ggplot2</code></pre>
-<pre class="r"><code>train &lt;- read.csv(file='pml-training.csv',na.strings=c('#DIV/0!', '', 'NA'),stringsAsFactors=FALSE)#,colClasses = c(rep(&quot;character&quot;,7),rep(&quot;integer&quot;, 152), rep(&quot;character&quot;, 1)) )
+<pre class="r"><code>train &lt;- read.csv(file='pml-training.csv',na.strings=c('#DIV/0!', '', 'NA'),stringsAsFactors=FALSE)
 train &lt;- train[, -grep(&quot;(kurtosis.*)|(skewness.*belt)|(skewness.*arm)|(skewness.*dumbbell)|(min_yaw_forearm)&quot;, colnames(train))]
 train &lt;- na.omit(train)
 train &lt;- train[,c(8:135)]
 train[, c(1:127)] &lt;- sapply(train[, c(1:127)], as.numeric)
 train$classe = factor(train$classe)
-dim(train)</code></pre>
-<pre><code>## [1] 317 128</code></pre>
-<pre class="r"><code># train now has 128 cols
+
+# train now has 128 cols
 
 featurePlot(x=train[,
   c(&quot;max_roll_belt&quot;,
